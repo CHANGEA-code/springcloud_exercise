@@ -24,7 +24,7 @@ public class PaymentController {
     public RestTemplate restTemplate;
 
     @Resource
-    public LoadBalanced loadBalanced;
+    public LoadBalancer loadBalancer;
     @Resource
     public DiscoveryClient discoveryClient;
 
@@ -41,10 +41,10 @@ public class PaymentController {
     @GetMapping("/consumer/payment/lb")
     public String getPaymentLB(){
         List<ServiceInstance> instances = discoveryClient.getInstances("CLOUD-PAYMENT-SERVICE");
-        if (instances == null || instances.size() <= 0){
+        if (instances == null || instances.size() == 0){
             return null;
         }
-        ServiceInstance instance = loadBalanced.instance(instances);
+        ServiceInstance instance = loadBalancer.instance(instances);
         return restTemplate.getForObject(instance.getUri() + "/payment/lb", String.class);
     }
 
