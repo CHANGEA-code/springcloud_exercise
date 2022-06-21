@@ -2,7 +2,7 @@ package com.zebin.springcloud.controller;
 
 import com.zebin.springcloud.entities.CommonResult;
 import com.zebin.springcloud.entities.Payment;
-import com.zebin.springcloud.lb.LoadBalanced;
+import com.zebin.springcloud.lb.LoadBalancer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -47,5 +47,11 @@ public class PaymentController {
         ServiceInstance instance = loadBalancer.instance(instances);
         return restTemplate.getForObject(instance.getUri() + "/payment/lb", String.class);
     }
-
+    // ====================> zipkin+sleuth
+    @GetMapping("/consumer/payment/zipkin")
+    public String paymentZipkin()
+    {
+        String result = restTemplate.getForObject("http://localhost:8001"+"/payment/zipkin/", String.class);
+        return result;
+    }
 }
